@@ -48,7 +48,7 @@ public class Display {
         canvas.setMaximumSize(new Dimension(width, height));
         canvas.setMinimumSize(new Dimension(width, height));
         canvas.setFocusable(false);
-        frame.setIconImage(new ImageIcon(getClass().getResource("/1.png")).getImage());
+        frame.setIconImage(new ImageIcon(getClass().getResource("/1.png")).getImage()); // application icon
 
         frame.add(canvas);
         frame.pack(); // to ensure the whole canvas is visible
