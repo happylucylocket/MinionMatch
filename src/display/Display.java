@@ -35,7 +35,7 @@ public class Display {
         JFrame frame;
 
         frame = new JFrame(title);
-        frame.getContentPane().setBackground(Color.WHITE);
+        frame.getContentPane().setBackground(Color.lightGray);
         /*frame.getContentPane().setLayout(new GridLayout(6, 6, 10, 10));*/
         frame.setSize(width, height);
         frame.setVisible(true); // makes sure display is visible
@@ -48,7 +48,7 @@ public class Display {
         canvas.setMaximumSize(new Dimension(width, height));
         canvas.setMinimumSize(new Dimension(width, height));
         canvas.setFocusable(false);
-        frame.setIconImage(new ImageIcon(getClass().getResource("/1.png")).getImage()); // application icon
+        frame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
 
         frame.add(canvas);
         frame.pack(); // to ensure the whole canvas is visible

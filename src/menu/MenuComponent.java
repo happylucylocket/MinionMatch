@@ -13,7 +13,7 @@ import java.awt.*;
 public class MenuComponent extends JComponent {
     private JPanel mainPanel;
     private Image image;
-    private final String BACKGROUND_IMAGE = "/4.PNG";
+    private final String BACKGROUND_IMAGE = "/4.png";
 
     public MenuComponent() {
         setLayout(new BorderLayout());
@@ -33,7 +33,7 @@ public class MenuComponent extends JComponent {
     }
 
     public void addTitle() {
-        MenuLabel gameName = new MenuLabel("Memory Game", new Font(Font.MONOSPACED, Font.BOLD, 102), Color.WHITE);
+        MenuLabel gameName = new MenuLabel("Minion Match", new Font(Font.MONOSPACED, Font.BOLD, 102), Color.WHITE);
         mainPanel.add(gameName);
     }
 

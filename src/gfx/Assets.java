@@ -16,7 +16,7 @@ public class Assets {
      * Loads all necessary images and stores them as a variable for usage in program
      */
     public static void init() {
-        test = ImageLoader.loadImage("/SizeTest.png");
+        test = ImageLoader.loadImage("/1.png");
 
     }
 }

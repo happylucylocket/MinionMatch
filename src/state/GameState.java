@@ -31,9 +31,6 @@ public class GameState implements StateInterface {
         g.drawImage(Assets.test, 410, 510, null);
     }
 
-    /**
-     * Moves character and checks for character's interactions with game elements
-     */
     @Override
     public void tick() {
         return;
