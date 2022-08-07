@@ -1,79 +1,89 @@
 package card;
 
+import controller.cardController;
+
 import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
-import java.util.Objects;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-/**
- * Card class to represent the cards to be matched as buttons. EDIT THIS CLASS TO FIT!
- *
- * @author Sarah Li and Jennifer Kim
- * @version 1.0
- * @since 1.0
- */
-public class Card extends JButton {
-    private ImageIcon imageIcon;
-    private Color color;
-    private boolean addedToBoard;
-    private boolean clicked;
-    private boolean ninjaMode;
+public class Card extends JLabel implements MouseListener {
+    private final cardController controller;
+    Icon faceIcon;
+    Icon backIcon;
+    int value;
+    int iconWidthHalf, iconHeightHalf;
+    boolean mousePressedOnMe = false;
+    boolean faceUp = false;
 
-    /* Constructor board size */
-    public Card() {
-        addedToBoard = false;
-        ninjaMode = false;
-        imageIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/1.png")));
-
-        setPrimaryCard();
-
-        Border raisedBevel = BorderFactory.createRaisedBevelBorder();
-        Border loweredBevel = BorderFactory.createLoweredBevelBorder();
-        setBorder(BorderFactory.createCompoundBorder(raisedBevel, loweredBevel));
-
-        setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        addActionListener((e) ->
-        {
-            setIcon(null);
-            setBackground(color);
-            setEnabled(false);
-            clicked = true;
-        });
+    public Card(cardController controller, Icon faceIcon, Icon backIcon, int value) {
+        super(backIcon);
+        this.faceIcon = faceIcon;
+        this.backIcon = backIcon;
+        this.value = value;
+        this.addMouseListener(this);
+        this.iconHeightHalf = backIcon.getIconHeight() / 2;
+        this.iconWidthHalf = faceIcon.getIconWidth() / 2;
+        this.controller = controller;
     }
 
-    public void setPrimaryCard() {
-        setIcon(imageIcon);
-        setDisabledIcon(imageIcon);
+    public int getValue() { return value; }
 
-        if (!ninjaMode)
-            setBackground(Color.WHITE);
-
-        clicked = false;
-        setEnabled(true);
+    private boolean overIcon(int x, int y) {
+        int distX = Math.abs(x-this.getWidth()/2);
+        int distY = Math.abs(y-this.getHeight()/2);
+        // check if the click was outside a card or not
+        if(distX > this.iconHeightHalf || distY > this.iconWidthHalf) {
+            return false;
+        }
+        return true;
     }
 
-    public boolean isClicked() {
-        return clicked;
+    @Override
+    public void mouseClicked(MouseEvent clickEvent) {
+        if(overIcon(clickEvent.getX(), clickEvent.getY())) {
+            this.turnUp();
+        }
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void turnUp() {
+        if(this.faceUp) {
+            return;
+        }
+        this.faceUp = true;
+        this.faceUp = this.controller.flipUp(this);
+        if (this.faceUp) {
+            this.setIcon(this.faceIcon);
+        }
     }
 
-    public Color getColor() {
-        return color;
+    public void turnDown() {
+        if(!this.faceUp) {
+            return;
+        }
+        this.setIcon(this.backIcon);
+        this.faceUp = false;
     }
 
-    public boolean isAddedToBoard() {
-        return addedToBoard;
+    @Override
+    public void mousePressed(MouseEvent clickEvent) {
+        if(overIcon(clickEvent.getX(), clickEvent.getY())) {
+            this.mousePressedOnMe = true;
+        }
     }
 
-    public void setAddedToBoard(boolean addedToBoard) {
-        this.addedToBoard = addedToBoard;
+    @Override
+    public void mouseReleased(MouseEvent clickEvent) {
+        if(this.mousePressedOnMe) {
+            this.mousePressedOnMe = false;
+            this.mouseClicked(clickEvent);
+        }
     }
 
-    public void setNinjaMode() {
-        ninjaMode = !ninjaMode;
+    @Override
+    public void mouseEntered(MouseEvent clickEvent) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent clickEvent) {
     }
 }

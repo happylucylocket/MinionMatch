@@ -1,9 +1,9 @@
-import game.Game;
+import game.matchingGame;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            Game game = new Game();
+            matchingGame game = new matchingGame();
             game.start();
         } catch (Exception e) {
             e.printStackTrace();
