@@ -40,8 +40,8 @@ public class cardController implements ActionListener {
                 int matchedValue = card.getValue();
                 out.println(matchedValue);
 
-//                card.clearCard();
-//                otherCard.clearCard();
+                card.clearCard();
+                otherCard.clearCard();
                 // Clear the flippedCards array
                 this.flippedCards.clear();
 
