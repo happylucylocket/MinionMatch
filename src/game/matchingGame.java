@@ -5,9 +5,13 @@ import controller.cardController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Matching Game
@@ -19,16 +23,18 @@ public class matchingGame {
     private ImageIcon images[]; //0-17 front side of the card; 18 back side
     private Socket socket;
     private PrintWriter out;
-    private static final String SERVER_IP = "142.58.223.188";
+    private static final String SERVER_IP = "127.0.0.1";
     private static final int SERVER_PORT = 8080;
+    private Listener listener;
 
-    public matchingGame() {
+    public matchingGame() throws IOException {
         this.mainFrame = new JFrame ("Minion Match");
         this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.mainFrame.setSize(490, 678);
         this.mainContentPane = this.mainFrame.getContentPane();
         this.mainContentPane.setLayout(new BoxLayout(this.mainContentPane, BoxLayout.PAGE_AXIS));
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
+
 
         //Load the cards
         this.images = loadCardImages();
@@ -40,12 +46,14 @@ public class matchingGame {
 
             System.out.println("error");
         }
+        this.listener = new Listener(socket);
+        listener.start();
 
     }
 
     private ImageIcon[] loadCardImages() {
-        ImageIcon images[] = new ImageIcon[19];
-        for (int i = 0; i < 19; i++) {
+        ImageIcon images[] = new ImageIcon[20];
+        for (int i = 0; i < 20; i++) {
             String fileName = "resources/" + i + ".png";
             images[i] = new ImageIcon(fileName);
         }
@@ -56,6 +64,7 @@ public class matchingGame {
         JPanel panel = new JPanel(new GridLayout(6, 6));
         // All cards have same back side
         ImageIcon backIcon = this.images[18];
+        ImageIcon clearIcon = this.images[19];
         cardController controller = new cardController(this.out);
 
         int cardsToAdd[] = new int[36]; // 6x6 grid
@@ -69,7 +78,7 @@ public class matchingGame {
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
             int num = cardsToAdd[i];
-            Card newCard = new Card(controller, this.images[num], backIcon, num);
+            Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num);
             panel.add(newCard);
         }
         return panel;
@@ -95,4 +104,25 @@ public class matchingGame {
         this.mainFrame.setResizable(false);
         this.mainFrame.setLocationRelativeTo(null); // creates window in center of screen
     }
+
+    private static class Listener extends Thread {
+        BufferedReader input;
+        public Listener(Socket socket) throws IOException {
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    String serverResponse = input.readLine();
+                    System.out.println(serverResponse);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
+
