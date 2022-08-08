@@ -5,6 +5,8 @@ import controller.cardController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Random;
 
 /**
@@ -15,6 +17,10 @@ public class matchingGame {
     private JFrame mainFrame;
     private Container mainContentPane;
     private ImageIcon images[]; //0-17 front side of the card; 18 back side
+    private Socket socket;
+    private PrintWriter out;
+    private static final String SERVER_IP = "142.58.223.188";
+    private static final int SERVER_PORT = 8080;
 
     public matchingGame() {
         this.mainFrame = new JFrame ("Minion Match");
@@ -26,6 +32,15 @@ public class matchingGame {
 
         //Load the cards
         this.images = loadCardImages();
+        try{
+            this.socket = new Socket(SERVER_IP, SERVER_PORT);
+
+            this.out = new PrintWriter(socket.getOutputStream(), true);
+        }catch (Exception e){
+
+            System.out.println("error");
+        }
+
     }
 
     private ImageIcon[] loadCardImages() {
@@ -41,7 +56,7 @@ public class matchingGame {
         JPanel panel = new JPanel(new GridLayout(6, 6));
         // All cards have same back side
         ImageIcon backIcon = this.images[18];
-        cardController controller = new cardController();
+        cardController controller = new cardController(this.out);
 
         int cardsToAdd[] = new int[36]; // 6x6 grid
         for (int i = 0; i < 18; i++) {
