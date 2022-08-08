@@ -48,8 +48,8 @@ public class matchingGame {
             cardsToAdd[2*i] = i;
             cardsToAdd[2*i+1] = i;
         }
-        // Randomize the cards (later)
-        randomizeCardArray(cardsToAdd);
+        // Randomize the cards
+        /*randomizeCardArray(cardsToAdd);*/
 
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
