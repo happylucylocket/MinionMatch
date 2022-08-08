@@ -10,15 +10,18 @@ public class Card extends JLabel implements MouseListener {
     private final cardController controller;
     Icon faceIcon;
     Icon backIcon;
+    Icon clearIcon;
     int value;
     int iconWidthHalf, iconHeightHalf;
     boolean mousePressedOnMe = false;
     boolean faceUp = false;
+    boolean clear = false;
 
-    public Card(cardController controller, Icon faceIcon, Icon backIcon, int value) {
+    public Card(cardController controller, Icon faceIcon, Icon backIcon, Icon clearIcon, int value) {
         super(backIcon);
         this.faceIcon = faceIcon;
         this.backIcon = backIcon;
+        this.clearIcon = clearIcon;
         this.value = value;
         this.addMouseListener(this);
         this.iconHeightHalf = backIcon.getIconHeight() / 2;
@@ -51,7 +54,7 @@ public class Card extends JLabel implements MouseListener {
         }
         this.faceUp = true;
         this.faceUp = this.controller.flipUp(this);
-        if (this.faceUp) {
+        if (!this.clear && this.faceUp) {
             this.setIcon(this.faceIcon);
         }
     }
@@ -62,6 +65,11 @@ public class Card extends JLabel implements MouseListener {
         }
         this.setIcon(this.backIcon);
         this.faceUp = false;
+    }
+
+    public void clearCard() {
+        this.clear = true;
+        this.setIcon(this.clearIcon);
     }
 
     @Override
