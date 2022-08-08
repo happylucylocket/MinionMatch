@@ -8,7 +8,7 @@ import java.awt.event.MouseListener;
 
 public class Card extends JLabel implements MouseListener {
     private final cardController controller;
-    Icon faceIcon;
+    public Icon faceIcon;
     Icon backIcon;
     Icon clearIcon;
     int value;

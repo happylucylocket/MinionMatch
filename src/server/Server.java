@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private static Set<String> names = new HashSet<>();
+    private static HashSet<Integer> matchedValues = new HashSet<Integer>();
 
     // The set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
@@ -55,19 +55,16 @@ public class Server {
                 in = new Scanner(socket.getInputStream());
                 out = new PrintWriter(socket.getOutputStream(), true);
 
-
                 writers.add(out);
 
                 while (true) {
-                    String input = in.nextLine();
-                    if (input.toLowerCase().startsWith("/quit")) {
-                        return;
-                    }
-
-                    //broadcast to all
-                    for (PrintWriter writer : writers) {
-
-                        writer.println("MESSAGE :" + input);
+                    int serverResponse = Integer.parseInt(in.nextLine());
+                    if(!matchedValues.contains(serverResponse)) {
+                        matchedValues.add(serverResponse);
+                        //broadcast to all
+                        for (PrintWriter writer : writers) {
+                            writer.println(serverResponse);
+                        }
                     }
                 }
             } catch (Exception e) {

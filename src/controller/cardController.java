@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class cardController implements ActionListener {
 
@@ -36,12 +37,11 @@ public class cardController implements ActionListener {
             Card otherCard = (Card)this.flippedCards.get(0);
             if (otherCard.getValue() == card.getValue()) {
                 // Sending the message to the server
-                String msg = "card match -> " + otherCard.getValue() + " - " + card.getValue();
-                out.println(msg);
+                int matchedValue = card.getValue();
+                out.println(matchedValue);
 
-
-                card.clearCard();
-                otherCard.clearCard();
+//                card.clearCard();
+//                otherCard.clearCard();
                 // Clear the flippedCards array
                 this.flippedCards.clear();
 
