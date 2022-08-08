@@ -16,13 +16,13 @@ public class cardController implements ActionListener {
     private PrintWriter out;
     public cardController(PrintWriter object) {
         this.out=object;
-        this.flippedCards = new Vector(2);
+        this.flippedCards = new Vector<Card>(2);
         this.flipDownTimer = new Timer(this.flipDownDelay, this);
         this.flipDownTimer.setRepeats(false);
     }
 
     public boolean flipUp(Card card) {
-        System.out.println("FlipUp");
+//        System.out.println("FlipUp");
         if (this.flippedCards.size() < 2) {
             return doAddCard(card);
         }
@@ -30,34 +30,22 @@ public class cardController implements ActionListener {
     }
 
     private boolean doAddCard(Card card) {
-        System.out.println("doAddCard");
+//        System.out.println("doAddCard");
         this.flippedCards.add(card);
         if (this.flippedCards.size() == 2) {
             Card otherCard = (Card)this.flippedCards.get(0);
             if (otherCard.getValue() == card.getValue()) {
-
-                // Add one to the score (TO IMPLEMENT)
-
-                // SEND TO SERVER THE MATCH
-
-                // try {
-
-
-                System.out.println("->:");
+                // Sending the message to the server
                 String msg = "card match -> " + otherCard.getValue() + " - " + card.getValue();
                 out.println(msg);
 
-//                input.close();
-//                out.close();
-//                socket.close();
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
 
+                card.clearCard();
+                otherCard.clearCard();
                 // Clear the flippedCards array
                 this.flippedCards.clear();
-                //}
-            }else {
+
+            } else {
                 this.flipDownTimer.start();
             }
         }

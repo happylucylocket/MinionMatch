@@ -52,8 +52,8 @@ public class matchingGame {
     }
 
     private ImageIcon[] loadCardImages() {
-        ImageIcon images[] = new ImageIcon[19];
-        for (int i = 0; i < 19; i++) {
+        ImageIcon images[] = new ImageIcon[20];
+        for (int i = 0; i < 20; i++) {
             String fileName = "resources/" + i + ".png";
             images[i] = new ImageIcon(fileName);
         }
@@ -64,6 +64,7 @@ public class matchingGame {
         JPanel panel = new JPanel(new GridLayout(6, 6));
         // All cards have same back side
         ImageIcon backIcon = this.images[18];
+        ImageIcon clearIcon = this.images[19];
         cardController controller = new cardController(this.out);
 
         int cardsToAdd[] = new int[36]; // 6x6 grid
@@ -77,7 +78,7 @@ public class matchingGame {
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
             int num = cardsToAdd[i];
-            Card newCard = new Card(controller, this.images[num], backIcon, num);
+            Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num);
             panel.add(newCard);
         }
         return panel;
@@ -114,7 +115,7 @@ public class matchingGame {
         public void run() {
             try {
                 while (true) {
-                    String serverResponse = null;
+                    String serverResponse = input.readLine();
                     System.out.println(serverResponse);
                 }
             } catch (Exception e) {
