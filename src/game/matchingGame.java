@@ -27,6 +27,7 @@ public class matchingGame {
 //    private static final String SERVER_IP = "142.58.223.188";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
+    private static ArrayList<Card> cardArray = new ArrayList<Card>();
 
     public matchingGame() throws IOException {
         this.mainFrame = new JFrame ("Minion Match");
@@ -82,6 +83,7 @@ public class matchingGame {
             int num = cardsToAdd[i];
             Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num);
             panel.add(newCard);
+            cardArray.add(newCard);
         }
         return panel;
     }
@@ -119,6 +121,12 @@ public class matchingGame {
                 while (true) {
                     Integer serverResponse = Integer.parseInt(input.readLine());
                     System.out.println(serverResponse);
+
+                    for(Card card : cardArray) {
+                        if(card.getValue() == serverResponse) {
+                            card.clearCard();
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

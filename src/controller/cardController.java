@@ -42,6 +42,7 @@ public class cardController implements ActionListener {
 
                 card.clearCard();
                 otherCard.clearCard();
+
                 // Clear the flippedCards array
                 this.flippedCards.clear();
 
