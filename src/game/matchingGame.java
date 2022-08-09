@@ -23,8 +23,8 @@ public class matchingGame {
     private Socket socket;
     private PrintWriter out;
     // local
-    private static final String SERVER_IP = "127.0.0.1";
-//    private static final String SERVER_IP = "142.58.223.188";
+//    private static final String SERVER_IP = "127.0.0.1";
+    private static final String SERVER_IP = "142.58.223.188";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
     private static ArrayList<Card> cardArray = new ArrayList<Card>();

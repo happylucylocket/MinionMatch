@@ -30,6 +30,7 @@ public class cardController implements ActionListener {
         return false;
     }
 
+    // CLEAR CARD FUNCTION AFTER EVERY MATCH
     private boolean doAddCard(Card card) {
 //        System.out.println("doAddCard");
         this.flippedCards.add(card);
@@ -40,8 +41,8 @@ public class cardController implements ActionListener {
                 int matchedValue = card.getValue();
                 out.println(matchedValue);
 
-                card.clearCard();
-                otherCard.clearCard();
+//                card.clearCard();
+//                otherCard.clearCard();
 
                 // Clear the flippedCards array
                 this.flippedCards.clear();
@@ -52,6 +53,8 @@ public class cardController implements ActionListener {
         }
         return true;
     }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

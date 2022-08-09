@@ -30,7 +30,7 @@ public class Server {
     }
 
     private static class Handler implements Runnable {
-        private String name;
+        private Integer id;
         private Socket socket;
         private Scanner in;
         private PrintWriter out;
