@@ -31,7 +31,7 @@ public class cardController implements ActionListener {
 
     public boolean flipUp(Card card) {
 //        System.out.println("FlipUp");
-        if (this.getFlippedCards().size() < 2) {
+        if (getFlippedCards().size() < 2) {
             return doAddCard(card);
         }
         return false;
@@ -40,9 +40,9 @@ public class cardController implements ActionListener {
     // CLEAR CARD FUNCTION AFTER EVERY MATCH
     private boolean doAddCard(Card card) {
 //        System.out.println("doAddCard");
-        this.getFlippedCards().add(card);
-        if (this.getFlippedCards().size() == 2) {
-            Card otherCard = (Card) this.getFlippedCards().get(0);
+        getFlippedCards().add(card);
+        if (getFlippedCards().size() == 2) {
+            Card otherCard = (Card) getFlippedCards().get(0);
             if (otherCard.getValue() == card.getValue()) {
                 // Sending the message to the server
                 int matchedValue = card.getValue();
@@ -52,7 +52,7 @@ public class cardController implements ActionListener {
 //                otherCard.clearCard();
 
                 // Clear the flippedCards array
-                this.getFlippedCards().clear();
+                getFlippedCards().clear();
 
             } else {
                 this.flipDownTimer.start();
@@ -64,10 +64,10 @@ public class cardController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 //        System.out.println("action ");
-        for (int i = 0; i < this.getFlippedCards().size(); i++) {
-            Card card = (Card) this.getFlippedCards().get(i);
+        for (int i = 0; i < getFlippedCards().size(); i++) {
+            Card card = (Card) getFlippedCards().get(i);
             card.turnDown();
         }
-        this.getFlippedCards().clear();
+        getFlippedCards().clear();
     }
 }

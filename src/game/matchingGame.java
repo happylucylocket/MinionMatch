@@ -139,7 +139,7 @@ public class matchingGame {
                     Vector<Card> flippedCards = getFlippedCards();
                     for(Card card : flippedCards) {
                         if(card.getValue() == matchedValue) {
-                            flippedCards.remove(card);
+                            flippedCards.clear();
                         }
                     }
                 }
