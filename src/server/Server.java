@@ -4,24 +4,23 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Collections;
 
 public class Server {
-
-    private static HashSet<Integer> matchedValues = new HashSet<Integer>();
-
+    private static Map<Integer, Integer> matchedValues = Collections.synchronizedMap(new HashMap<>());
+    private static Boolean[] cardList = new Boolean[36];
     // The set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
-
+    private static AtomicInteger clientIds = new AtomicInteger();
     public static void main(String[] args) throws Exception {
         System.out.println("The chat server is running...");
         var pool = Executors.newFixedThreadPool(4);
         try (var listener = new ServerSocket(8080)) {
             while (true) {
-                pool.execute(new Handler(listener.accept()));
+                pool.execute(new Handler(listener.accept(), clientIds.getAndIncrement()));
                 System.out.println("client connect");
                 System.out.println(writers.size());
 
@@ -40,8 +39,9 @@ public class Server {
          * work is done in the run method. Remember the constructor is called from the
          * server's main method, so this has to be as short as possible.
          */
-        public Handler(Socket socket) {
+        public Handler(Socket socket, int id) {
             this.socket = socket;
+            this.id = id;
         }
 
         /**
@@ -59,11 +59,13 @@ public class Server {
 
                 while (true) {
                     int serverResponse = Integer.parseInt(in.nextLine());
-                    if(!matchedValues.contains(serverResponse)) {
-                        matchedValues.add(serverResponse);
+//                    System.out.println("Client sent " + serverResponse);
+                    if(!matchedValues.containsKey(serverResponse)) {
+                        matchedValues.put(serverResponse, id);
                         //broadcast to all
                         for (PrintWriter writer : writers) {
-                            writer.println(serverResponse);
+//                            writer.println(serverResponse);
+                            writer.println(serverResponse + ",Client " + id + " matched the cards with value " + serverResponse);
                         }
                     }
                 }

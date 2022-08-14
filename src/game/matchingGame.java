@@ -23,8 +23,8 @@ public class matchingGame {
     private Socket socket;
     private PrintWriter out;
     // local
-//    private static final String SERVER_IP = "127.0.0.1";
-    private static final String SERVER_IP = "142.58.223.188";
+    private static final String SERVER_IP = "127.0.0.1";
+//    private static final String SERVER_IP = "142.58.223.188";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
     private static ArrayList<Card> cardArray = new ArrayList<Card>();
@@ -36,7 +36,6 @@ public class matchingGame {
         this.mainContentPane = this.mainFrame.getContentPane();
         this.mainContentPane.setLayout(new BoxLayout(this.mainContentPane, BoxLayout.PAGE_AXIS));
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
-
 
         //Load the cards
         this.images = loadCardImages();
@@ -81,7 +80,7 @@ public class matchingGame {
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
             int num = cardsToAdd[i];
-            Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num);
+            Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num, i);
             panel.add(newCard);
             cardArray.add(newCard);
         }
@@ -119,11 +118,13 @@ public class matchingGame {
         public void run() {
             try {
                 while (true) {
-                    Integer serverResponse = Integer.parseInt(input.readLine());
-                    System.out.println(serverResponse);
+                    String serverResponse = input.readLine();
+                    String[] serverResponseArray = serverResponse.split(",");
+                    Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
+                    System.out.println(serverResponseArray[1]);
 
                     for(Card card : cardArray) {
-                        if(card.getValue() == serverResponse) {
+                        if(card.getValue() == matchedValue) {
                             card.clearCard();
                         }
                     }

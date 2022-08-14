@@ -54,8 +54,6 @@ public class cardController implements ActionListener {
         return true;
     }
 
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         System.out.println("action ");
