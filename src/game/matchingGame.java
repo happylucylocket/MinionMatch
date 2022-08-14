@@ -27,8 +27,8 @@ public class matchingGame {
     private Socket socket;
     private PrintWriter out;
     // local
-//    private static final String SERVER_IP = "127.0.0.1";
-    private static final String SERVER_IP = "142.58.217.96";
+    private static final String SERVER_IP = "127.0.0.1";
+//    private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
     private static JTextArea text;
@@ -146,7 +146,7 @@ public class matchingGame {
                     String[] serverResponseArray = serverResponse.split("-");
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
-                        text.setText("<html>" + text.getText() + "<br/>" + serverResponseArray[1] + "</html>");
+                        text.setText(text.getText() + "     " + serverResponseArray[1]);
                         text.setLineWrap(true);
                         text.setWrapStyleWord(true);
                     }
