@@ -10,9 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Collections;
 
 public class Server {
+    // stores all the cards that have been matched
+    // key = the value of the card that was matched, value = the client id who got the match
     private static Map<Integer, Integer> matchedValues = Collections.synchronizedMap(new HashMap<>());
-    private static Boolean[] cardList = new Boolean[36];
-    // The set of all the print writers for all the clients, used for broadcast.
+    // the set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
     private static AtomicInteger clientIds = new AtomicInteger();
     private static boolean flag = false;
@@ -26,7 +27,6 @@ public class Server {
                 pool.execute(new Handler(listener.accept(), clientIds.getAndIncrement()));
                 System.out.println("client connect");
                 System.out.println(writers.size());
-
             }
         }
     }
@@ -37,41 +37,31 @@ public class Server {
         private Scanner in;
         private PrintWriter out;
 
-        /**
-         * Constructs a handler thread, squirreling away the socket. All the interesting
-         * work is done in the run method. Remember the constructor is called from the
-         * server's main method, so this has to be as short as possible.
-         */
         public Handler(Socket socket, int id) {
             this.socket = socket;
             this.id = id;
         }
 
-        /**
-         * Services this thread's client by repeatedly requesting a screen name until a
-         * unique one has been submitted, then acknowledges the name and registers the
-         * output stream for the client in a global set, then repeatedly gets inputs and
-         * broadcasts them.
-         */
         public void run() {
             try {
                 in = new Scanner(socket.getInputStream());
                 out = new PrintWriter(socket.getOutputStream(), true);
 
                 writers.add(out);
+                // displaying the client id to the client who connected
                 out.println("You are Client " + id);
                 while (true) {
                     int serverResponse = Integer.parseInt(in.nextLine());
-//                    System.out.println("Client sent " + serverResponse);
                     if(!matchedValues.containsKey(serverResponse)) {
                         matchedValues.put(serverResponse, id);
-                        //broadcast to all
+                        // broadcast to all clients
                         for (PrintWriter writer : writers) {
-//                            writer.println(serverResponse);
-                            writer.println(serverResponse + ":Client " + id + " matched the cards with value " + serverResponse);
+                            writer.println(serverResponse + "-Client " + id + " matched the cards with value " + serverResponse);
                         }
                     }
+                    // checking if the game is finished (all the cards have been matched)
                     if(matchedValues.size() == 18 && flag == false) {
+                        // check for concurrency
                         flag = true;
                         // calculate client scores
                         int[] clientScores = new int[writers.size()];
@@ -80,7 +70,7 @@ public class Server {
                         }
                         for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
-                                writer.println("END GAME:Client " + index + " - " + clientScores[index]);
+                                writer.println("END GAME-Client " + index + ": " + clientScores[index]);
                             }
                         }
                     }

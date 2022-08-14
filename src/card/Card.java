@@ -76,7 +76,6 @@ public class Card extends JLabel implements MouseListener {
         this.backIcon = this.clearIcon;
     }
 
-
     @Override
     public void mousePressed(MouseEvent clickEvent) {
         if(overIcon(clickEvent.getX(), clickEvent.getY())) {

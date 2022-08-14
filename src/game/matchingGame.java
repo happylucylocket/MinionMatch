@@ -143,7 +143,7 @@ public class matchingGame {
             try {
                 while (true) {
                     String serverResponse = input.readLine();
-                    String[] serverResponseArray = serverResponse.split(":");
+                    String[] serverResponseArray = serverResponse.split("-");
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
                         text.setText("<html>" + text.getText() + "<br/>" + serverResponseArray[1] + "</html>");
