@@ -12,6 +12,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
 
+import static controller.cardController.getFlippedCards;
+
 /**
  * Matching Game
  * @author Dylan Feng, Sarah Li
@@ -28,6 +30,7 @@ public class matchingGame {
     private static final int SERVER_PORT = 8080;
     private Listener listener;
     private static ArrayList<Card> cardArray = new ArrayList<Card>();
+    private cardController controller;
 
     public matchingGame() throws IOException {
         this.mainFrame = new JFrame ("Minion Match");
@@ -36,6 +39,7 @@ public class matchingGame {
         this.mainContentPane = this.mainFrame.getContentPane();
         this.mainContentPane.setLayout(new BoxLayout(this.mainContentPane, BoxLayout.PAGE_AXIS));
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
+        controller = new cardController(this.out);
 
         //Load the cards
         this.images = loadCardImages();
@@ -67,7 +71,6 @@ public class matchingGame {
         // All cards have same back side
         ImageIcon backIcon = this.images[18];
         ImageIcon clearIcon = this.images[19];
-        cardController controller = new cardController(this.out);
 
         int cardsToAdd[] = new int[36]; // 6x6 grid
         for (int i = 0; i < 18; i++) {
@@ -75,7 +78,7 @@ public class matchingGame {
             cardsToAdd[2*i+1] = i;
         }
         // Randomize the cards
-        randomizeCardArray(cardsToAdd);
+//        randomizeCardArray(cardsToAdd);
 
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
@@ -129,6 +132,11 @@ public class matchingGame {
                     System.out.println(serverResponseArray[1]);
 
                     for(Card card : cardArray) {
+                        if(card.getValue() == matchedValue) {
+                            card.clearCard();
+                        }
+                    }
+                    for(Card card : (Vector<Card>)getFlippedCards()) {
                         if(card.getValue() == matchedValue) {
                             card.clearCard();
                         }
