@@ -47,7 +47,7 @@ public class matchingGame {
         // Make new JPanel for text
         this.textPanel = new JPanel();
         this.text = new JLabel();
-        this.text.setPreferredSize(new Dimension(430, 60));
+        this.text.setPreferredSize(new Dimension(430, 30));
         this.text.setFont(new Font("Comic Sans MS", 1, 14));
         this.text.setText("  NEW TEXT");
 
@@ -146,7 +146,7 @@ public class matchingGame {
                     String[] serverResponseArray = serverResponse.split(":");
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
-                        text.setText(text.getText() + "<br>" + serverResponseArray[1]);
+                        text.setText("<html>" + text.getText() + "<br/>" + serverResponseArray[1] + "</html>");
                     }
                     else {
                         Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
