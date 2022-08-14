@@ -31,7 +31,7 @@ public class matchingGame {
     private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
-    private static JLabel text;
+    private static JTextArea text;
     private static ArrayList<Card> cardArray = new ArrayList<Card>();
     private cardController controller;
 
@@ -46,7 +46,7 @@ public class matchingGame {
 
         // Make new JPanel for text
         this.textPanel = new JPanel();
-        this.text = new JLabel();
+        this.text = new JTextArea();
         this.text.setPreferredSize(new Dimension(430, 45));
         this.text.setFont(new Font("Comic Sans MS", 1, 12));
         this.text.setText("  NEW TEXT");
@@ -147,6 +147,8 @@ public class matchingGame {
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
                         text.setText("<html>" + text.getText() + "<br/>" + serverResponseArray[1] + "</html>");
+                        text.setLineWrap(true);
+                        text.setWrapStyleWord(true);
                     }
                     else {
                         Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
