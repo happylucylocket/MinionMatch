@@ -39,7 +39,7 @@ public class matchingGame {
         this.mainContentPane = this.mainFrame.getContentPane();
         this.mainContentPane.setLayout(new BoxLayout(this.mainContentPane, BoxLayout.PAGE_AXIS));
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
-        controller = new cardController(this.out);
+
 
         //Load the cards
         this.images = loadCardImages();
@@ -51,7 +51,7 @@ public class matchingGame {
 
             System.out.println("error");
         }
-
+        controller = new cardController(this.out);
         this.listener = new Listener(socket);
         listener.start();
 
