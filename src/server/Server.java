@@ -65,7 +65,7 @@ public class Server {
                         //broadcast to all
                         for (PrintWriter writer : writers) {
 //                            writer.println(serverResponse);
-                            writer.println(serverResponse + ",Client " + id + " matched the cards with value " + serverResponse);
+                            writer.println(serverResponse + ":Client " + id + " matched the cards with value " + serverResponse);
                         }
                     }
                     if(matchedValues.size() == 18) {
@@ -77,7 +77,7 @@ public class Server {
                         }
                         for(int index = 0; index<numClients; index++) {
                             for (PrintWriter writer : writers) {
-                                writer.println("Client " + index + " got a score of " + clientScores[index]);
+                                writer.println("END GAME:Client " + index + " got a score of " + clientScores[index]);
                             }
                         }
                     }

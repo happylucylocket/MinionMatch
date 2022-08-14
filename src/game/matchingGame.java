@@ -127,20 +127,25 @@ public class matchingGame {
             try {
                 while (true) {
                     String serverResponse = input.readLine();
-                    String[] serverResponseArray = serverResponse.split(",");
-                    Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
-                    System.out.println(serverResponseArray[1]);
-
-                    for(Card card : cardArray) {
-                        if(card.getValue() == matchedValue) {
-                            card.clearCard();
-                        }
+                    String[] serverResponseArray = serverResponse.split(":");
+                    if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
+                        System.out.println(serverResponseArray[1]);
                     }
-                    Vector<Card> flippedCards = getFlippedCards();
-                    if(getFlippedCards().size() == 1) {
-                        Card card1 = (Card) getFlippedCards().get(0);
-                        if(card1 != null && card1.getValue() == matchedValue) {
-                            flippedCards.remove(card1);
+                    else {
+                        Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
+                        System.out.println(serverResponseArray[1]);
+
+                        for (Card card : cardArray) {
+                            if (card.getValue() == matchedValue) {
+                                card.clearCard();
+                            }
+                        }
+                        Vector<Card> flippedCards = getFlippedCards();
+                        if (getFlippedCards().size() == 1) {
+                            Card card1 = (Card) getFlippedCards().get(0);
+                            if (card1 != null && card1.getValue() == matchedValue) {
+                                flippedCards.remove(card1);
+                            }
                         }
                     }
                 }
