@@ -46,8 +46,6 @@ public class matchingGame {
         this.text = new JTextArea();
         this.text.setPreferredSize(new Dimension(430, 45));
         this.text.setFont(new Font("Comic Sans MS", 1, 12));
-        this.text.setText("  NEW TEXT");
-
 
         // load the card images
         this.images = loadCardImages();
@@ -137,7 +135,7 @@ public class matchingGame {
                 // reads initial message of client id
                 String clientNumber = input.readLine();
                 System.out.println(clientNumber);
-                text.setText("  " + clientNumber);
+                text.setText("  " + clientNumber + "\n");
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -153,7 +151,7 @@ public class matchingGame {
                     // END GAME case
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
-                        text.setText("   " + text.getText() + "     " + serverResponseArray[1]);
+                        text.setText(text.getText() + "  " + serverResponseArray[1]);
                         text.setLineWrap(true);
                         text.setWrapStyleWord(true);
                     }

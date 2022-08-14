@@ -49,7 +49,7 @@ public class Server {
 
                 writers.add(out);
                 // displaying the client id to the client who connected
-                out.println("You are player " + ( id + 1));
+                out.println("Player " + ( id + 1));
                 while (true) {
                     // read an input from the server
                     int serverResponse = Integer.parseInt(in.nextLine());
@@ -74,7 +74,7 @@ public class Server {
                         // write current client score to the other clients
                         for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
-                                writer.println("END GAME-Client " + (index+1) + ": " + clientScores[index]);
+                                writer.println("END GAME-Player " + (index+1) + ": " + clientScores[index]);
                             }
                         }
                     }
