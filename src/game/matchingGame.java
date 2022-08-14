@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Random;
 import java.util.*;
-
 import static controller.cardController.getFlippedCards;
 
 /**
@@ -20,6 +20,8 @@ import static controller.cardController.getFlippedCards;
  */
 public class matchingGame {
     private JFrame mainFrame;
+    private JPanel panel;
+    private JPanel textPanel;
     private Container mainContentPane;
     private ImageIcon images[]; //0-17 front side of the card; 18 back side
     private Socket socket;
@@ -29,16 +31,25 @@ public class matchingGame {
     private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
+    private JLabel text;
     private static ArrayList<Card> cardArray = new ArrayList<Card>();
     private cardController controller;
 
     public matchingGame() throws IOException {
         this.mainFrame = new JFrame ("Minion Match");
         this.mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.mainFrame.setSize(490, 678);
+        this.mainFrame.setSize(430, 678);
         this.mainContentPane = this.mainFrame.getContentPane();
         this.mainContentPane.setLayout(new BoxLayout(this.mainContentPane, BoxLayout.PAGE_AXIS));
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
+        this.panel = new JPanel(new GridLayout(6, 6));
+
+        // Make new JPanel for text
+        this.textPanel = new JPanel();
+        this.text = new JLabel();
+        this.text.setPreferredSize(new Dimension(430, 30));
+        this.text.setFont(new Font("Comic Sans MS", 1, 10));
+        this.text.setText("  NEW TEXT");
 
 
         //Load the cards
@@ -47,7 +58,7 @@ public class matchingGame {
             this.socket = new Socket(SERVER_IP, SERVER_PORT);
 
             this.out = new PrintWriter(socket.getOutputStream(), true);
-        }catch (Exception e){
+        } catch (Exception e){
 
             System.out.println("error");
         }
@@ -66,8 +77,8 @@ public class matchingGame {
         return images;
     }
 
-    public JPanel makeCards() {
-        JPanel panel = new JPanel(new GridLayout(6, 6));
+    public JPanel makeCards(JPanel panel) {
+
         // All cards have same back side
         ImageIcon backIcon = this.images[18];
         ImageIcon clearIcon = this.images[19];
@@ -104,11 +115,14 @@ public class matchingGame {
     public void start() {
         this.mainContentPane.removeAll();
         // make new card set visible
-        this.mainContentPane.add(makeCards());
+        this.mainContentPane.add(makeCards(panel));
+        this.textPanel.add(text);
+        this.mainFrame.add(textPanel);
+
         //show main in window
-        this.mainFrame.setVisible(true);
         this.mainFrame.setResizable(false);
         this.mainFrame.setLocationRelativeTo(null); // creates window in center of screen
+        this.mainFrame.setVisible(true);
     }
 
     private static class Listener extends Thread {
