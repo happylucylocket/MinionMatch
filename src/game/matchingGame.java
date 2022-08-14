@@ -117,6 +117,11 @@ public class matchingGame {
         @Override
         public void run() {
             try {
+                System.out.println(input.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
                 while (true) {
                     String serverResponse = input.readLine();
                     String[] serverResponseArray = serverResponse.split(",");
