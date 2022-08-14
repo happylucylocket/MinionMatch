@@ -15,6 +15,9 @@ public class Server {
     // The set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
     private static AtomicInteger clientIds = new AtomicInteger();
+    private static boolean flag = false;
+
+
     public static void main(String[] args) throws Exception {
         System.out.println("The chat server is running...");
         var pool = Executors.newFixedThreadPool(4);
@@ -68,7 +71,8 @@ public class Server {
                             writer.println(serverResponse + ":Client " + id + " matched the cards with value " + serverResponse);
                         }
                     }
-                    if(matchedValues.size() == 18) {
+                    if(matchedValues.size() == 18 && flag == false) {
+                        flag = true;
                         int numClients = writers.size();
                         // calculate client scores
                         int[] clientScores = new int[numClients];

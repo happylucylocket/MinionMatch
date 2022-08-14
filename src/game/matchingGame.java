@@ -78,7 +78,7 @@ public class matchingGame {
             cardsToAdd[2*i+1] = i;
         }
         // Randomize the cards
-//        randomizeCardArray(cardsToAdd);
+        randomizeCardArray(cardsToAdd);
 
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
