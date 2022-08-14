@@ -19,7 +19,7 @@ public class Server {
 
 
     public static void main(String[] args) throws Exception {
-        System.out.println("The chat server is running...");
+        System.out.println("MinionMatch is running!!!");
         var pool = Executors.newFixedThreadPool(4);
         try (var listener = new ServerSocket(8080)) {
             while (true) {
@@ -73,13 +73,12 @@ public class Server {
                     }
                     if(matchedValues.size() == 18 && flag == false) {
                         flag = true;
-                        int numClients = writers.size();
                         // calculate client scores
-                        int[] clientScores = new int[numClients];
+                        int[] clientScores = new int[writers.size()];
                         for(Map.Entry<Integer, Integer> entry : matchedValues.entrySet()) {
                             clientScores[entry.getValue()]++;
                         }
-                        for(int index = 0; index<numClients; index++) {
+                        for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
                                 writer.println("END GAME:Client " + index + " got a score of " + clientScores[index]);
                             }
