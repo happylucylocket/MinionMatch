@@ -56,7 +56,7 @@ public class cardController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("action ");
+//        System.out.println("action ");
         for (int i = 0; i < this.flippedCards.size(); i++) {
             Card card = (Card)this.flippedCards.get(i);
             card.turnDown();
