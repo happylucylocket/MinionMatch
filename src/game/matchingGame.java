@@ -136,9 +136,10 @@ public class matchingGame {
                             card.clearCard();
                         }
                     }
-                    for(Card card : (Vector<Card>)getFlippedCards()) {
+                    Vector<Card> flippedCards = getFlippedCards();
+                    for(Card card : flippedCards) {
                         if(card.getValue() == matchedValue) {
-                            card.clearCard();
+                            flippedCards.remove(card);
                         }
                     }
                 }
