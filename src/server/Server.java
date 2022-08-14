@@ -80,7 +80,7 @@ public class Server {
                         }
                         for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
-                                writer.println("END GAME:Client " + index + " got a score of " + clientScores[index]);
+                                writer.println("END GAME:Client " + index + " - " + clientScores[index]);
                             }
                         }
                     }
