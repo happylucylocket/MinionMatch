@@ -20,7 +20,7 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
         System.out.println("MinionMatch is running!!!");
-        var pool = Executors.newFixedThreadPool(4);
+        var pool = Executors.newFixedThreadPool(5);
         try (var listener = new ServerSocket(8080)) {
             while (true) {
                 // create a handler (thread) for every client that connects, max 5 clients
@@ -49,7 +49,7 @@ public class Server {
 
                 writers.add(out);
                 // displaying the client id to the client who connected
-                out.println("You are Client " + id);
+                out.println("You are player " + ( id + 1));
                 while (true) {
                     // read an input from the server
                     int serverResponse = Integer.parseInt(in.nextLine());
@@ -74,7 +74,7 @@ public class Server {
                         // write current client score to the other clients
                         for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
-                                writer.println("END GAME-Client " + index + ": " + clientScores[index]);
+                                writer.println("END GAME-Client " + (index+1) + ": " + clientScores[index]);
                             }
                         }
                     }
