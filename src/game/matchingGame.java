@@ -47,8 +47,8 @@ public class matchingGame {
         // Make new JPanel for text
         this.textPanel = new JPanel();
         this.text = new JLabel();
-        this.text.setPreferredSize(new Dimension(430, 30));
-        this.text.setFont(new Font("Comic Sans MS", 1, 14));
+        this.text.setPreferredSize(new Dimension(430, 45));
+        this.text.setFont(new Font("Comic Sans MS", 1, 12));
         this.text.setText("  NEW TEXT");
 
 
@@ -89,7 +89,7 @@ public class matchingGame {
             cardsToAdd[2*i+1] = i;
         }
         // Randomize the cards
-        randomizeCardArray(cardsToAdd);
+//        randomizeCardArray(cardsToAdd);
 
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
