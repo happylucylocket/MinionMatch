@@ -136,7 +136,7 @@ public class matchingGame {
             try {
                 String clientNumber = input.readLine();
                 System.out.println(clientNumber);
-                text.setText(clientNumber);
+                text.setText("  " + clientNumber);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -146,7 +146,7 @@ public class matchingGame {
                     String[] serverResponseArray = serverResponse.split(":");
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
-                        text.setText(text + "\n" + serverResponseArray[1]);
+                        text.setText(text.getText() + "\n" + serverResponseArray[1]);
                     }
                     else {
                         Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
