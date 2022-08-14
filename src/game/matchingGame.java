@@ -11,7 +11,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
-
+import java.util.*;
+import static controller.cardController.getFlippedCards;
 
 /**
  * Matching Game
@@ -25,10 +26,14 @@ public class matchingGame {
     private ImageIcon images[]; //0-17 front side of the card; 18 back side
     private Socket socket;
     private PrintWriter out;
-    private static final String SERVER_IP = "127.0.0.1";
+    // local
+//    private static final String SERVER_IP = "127.0.0.1";
+    private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
     private JLabel text;
+    private static ArrayList<Card> cardArray = new ArrayList<Card>();
+    private cardController controller;
 
     public matchingGame() throws IOException {
         this.mainFrame = new JFrame ("Minion Match");
@@ -57,7 +62,8 @@ public class matchingGame {
 
             System.out.println("error");
         }
-        listener = new Listener(socket);
+        controller = new cardController(this.out);
+        this.listener = new Listener(socket);
         listener.start();
 
     }
@@ -74,9 +80,8 @@ public class matchingGame {
     public JPanel makeCards(JPanel panel) {
 
         // All cards have same back side
-        ImageIcon backIcon = images[18];
-        ImageIcon clearIcon = images[19];
-        cardController controller = new cardController(out);
+        ImageIcon backIcon = this.images[18];
+        ImageIcon clearIcon = this.images[19];
 
         int cardsToAdd[] = new int[36]; // 6x6 grid
         for (int i = 0; i < 18; i++) {
@@ -84,13 +89,14 @@ public class matchingGame {
             cardsToAdd[2*i+1] = i;
         }
         // Randomize the cards
-        /*randomizeCardArray(cardsToAdd);*/
+        randomizeCardArray(cardsToAdd);
 
         // Make card object
         for (int i = 0; i < cardsToAdd.length; i++) {
             int num = cardsToAdd[i];
-            Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num);
+            Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num, i);
             panel.add(newCard);
+            cardArray.add(newCard);
         }
         return panel;
     }
@@ -128,9 +134,34 @@ public class matchingGame {
         @Override
         public void run() {
             try {
+                System.out.println(input.readLine());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
                 while (true) {
                     String serverResponse = input.readLine();
-                    System.out.println(serverResponse);
+                    String[] serverResponseArray = serverResponse.split(":");
+                    if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
+                        System.out.println(serverResponseArray[1]);
+                    }
+                    else {
+                        Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
+                        System.out.println(serverResponseArray[1]);
+
+                        for (Card card : cardArray) {
+                            if (card.getValue() == matchedValue) {
+                                card.clearCard();
+                            }
+                        }
+                        Vector<Card> flippedCards = getFlippedCards();
+                        if (getFlippedCards().size() == 1) {
+                            Card card1 = (Card) getFlippedCards().get(0);
+                            if (card1 != null && card1.getValue() == matchedValue) {
+                                flippedCards.remove(card1);
+                            }
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

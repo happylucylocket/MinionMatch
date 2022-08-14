@@ -4,24 +4,26 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Collections;
 
 public class Server {
-
-    private static Set<String> names = new HashSet<>();
-
+    private static Map<Integer, Integer> matchedValues = Collections.synchronizedMap(new HashMap<>());
+    private static Boolean[] cardList = new Boolean[36];
     // The set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
+    private static AtomicInteger clientIds = new AtomicInteger();
+    private static boolean flag = false;
+
 
     public static void main(String[] args) throws Exception {
-        System.out.println("The chat server is running...");
+        System.out.println("MinionMatch is running!!!");
         var pool = Executors.newFixedThreadPool(4);
         try (var listener = new ServerSocket(8080)) {
             while (true) {
-                pool.execute(new Handler(listener.accept()));
+                pool.execute(new Handler(listener.accept(), clientIds.getAndIncrement()));
                 System.out.println("client connect");
                 System.out.println(writers.size());
 
@@ -30,7 +32,7 @@ public class Server {
     }
 
     private static class Handler implements Runnable {
-        private String name;
+        private Integer id;
         private Socket socket;
         private Scanner in;
         private PrintWriter out;
@@ -40,8 +42,9 @@ public class Server {
          * work is done in the run method. Remember the constructor is called from the
          * server's main method, so this has to be as short as possible.
          */
-        public Handler(Socket socket) {
+        public Handler(Socket socket, int id) {
             this.socket = socket;
+            this.id = id;
         }
 
         /**
@@ -55,19 +58,31 @@ public class Server {
                 in = new Scanner(socket.getInputStream());
                 out = new PrintWriter(socket.getOutputStream(), true);
 
-
                 writers.add(out);
-
+                out.println("You are Client " + id);
                 while (true) {
-                    String input = in.nextLine();
-                    if (input.toLowerCase().startsWith("/quit")) {
-                        return;
+                    int serverResponse = Integer.parseInt(in.nextLine());
+//                    System.out.println("Client sent " + serverResponse);
+                    if(!matchedValues.containsKey(serverResponse)) {
+                        matchedValues.put(serverResponse, id);
+                        //broadcast to all
+                        for (PrintWriter writer : writers) {
+//                            writer.println(serverResponse);
+                            writer.println(serverResponse + ":Client " + id + " matched the cards with value " + serverResponse);
+                        }
                     }
-
-                    //broadcast to all
-                    for (PrintWriter writer : writers) {
-
-                        writer.println("MESSAGE :" + input);
+                    if(matchedValues.size() == 18 && flag == false) {
+                        flag = true;
+                        // calculate client scores
+                        int[] clientScores = new int[writers.size()];
+                        for(Map.Entry<Integer, Integer> entry : matchedValues.entrySet()) {
+                            clientScores[entry.getValue()]++;
+                        }
+                        for(int index = 0; index<writers.size(); index++) {
+                            for (PrintWriter writer : writers) {
+                                writer.println("END GAME:Client " + index + " got a score of " + clientScores[index]);
+                            }
+                        }
                     }
                 }
             } catch (Exception e) {
