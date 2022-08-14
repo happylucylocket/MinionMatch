@@ -73,6 +73,7 @@ public class Card extends JLabel implements MouseListener {
         this.clear = true;
         this.faceUp = false;
         this.setIcon(this.clearIcon);
+        this.backIcon = this.clearIcon;
     }
 
 
