@@ -56,7 +56,7 @@ public class Server {
                 out = new PrintWriter(socket.getOutputStream(), true);
 
                 writers.add(out);
-
+                out.println("You are Client " + id);
                 while (true) {
                     int serverResponse = Integer.parseInt(in.nextLine());
 //                    System.out.println("Client sent " + serverResponse);
@@ -66,6 +66,19 @@ public class Server {
                         for (PrintWriter writer : writers) {
 //                            writer.println(serverResponse);
                             writer.println(serverResponse + ",Client " + id + " matched the cards with value " + serverResponse);
+                        }
+                    }
+                    if(matchedValues.size() == 18) {
+                        int numClients = writers.size();
+                        // calculate client scores
+                        int[] clientScores = new int[numClients];
+                        for(Map.Entry<Integer, Integer> entry : matchedValues.entrySet()) {
+                            clientScores[entry.getValue()]++;
+                        }
+                        for(int index = 0; index<numClients; index++) {
+                            for (PrintWriter writer : writers) {
+                                writer.println("Client " + index + " got a score of " + clientScores[index]);
+                            }
                         }
                     }
                 }
