@@ -14,25 +14,22 @@ import java.util.Random;
 import java.util.*;
 import static controller.cardController.getFlippedCards;
 
-/**
- * Matching Game
- * @author Dylan Feng, Sarah Li
- */
 public class matchingGame {
     private JFrame mainFrame;
     private JPanel panel;
     private JPanel textPanel;
     private Container mainContentPane;
-    private ImageIcon images[]; //0-17 front side of the card; 18 back side
+    private ImageIcon images[];
     private Socket socket;
     private PrintWriter out;
     // local
     private static final String SERVER_IP = "127.0.0.1";
+    // have to change to the server host ip
 //    private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
     private static JTextArea text;
-    private static ArrayList<Card> cardArray = new ArrayList<Card>();
+    private static ArrayList<Card> cardArray = new ArrayList<>();
     private cardController controller;
 
     public matchingGame() throws IOException {
@@ -44,7 +41,7 @@ public class matchingGame {
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
         this.panel = new JPanel(new GridLayout(6, 6));
 
-        // Make new JPanel for text
+        // make new JPanel for text
         this.textPanel = new JPanel();
         this.text = new JTextArea();
         this.text.setPreferredSize(new Dimension(430, 45));
@@ -52,20 +49,21 @@ public class matchingGame {
         this.text.setText("  NEW TEXT");
 
 
-        //Load the cards
+        // load the card images
         this.images = loadCardImages();
-        try{
+
+        // connect to the server
+        try {
             this.socket = new Socket(SERVER_IP, SERVER_PORT);
-
             this.out = new PrintWriter(socket.getOutputStream(), true);
-        } catch (Exception e){
-
+        }
+        catch (Exception e){
             System.out.println("error");
         }
-        controller = new cardController(this.out);
         this.listener = new Listener(socket);
         listener.start();
 
+        controller = new cardController(this.out);
     }
 
     private ImageIcon[] loadCardImages() {
@@ -79,7 +77,7 @@ public class matchingGame {
 
     public JPanel makeCards(JPanel panel) {
 
-        // All cards have same back side
+        // all cards have same back side
         ImageIcon backIcon = this.images[18];
         ImageIcon clearIcon = this.images[19];
 
@@ -88,10 +86,11 @@ public class matchingGame {
             cardsToAdd[2*i] = i;
             cardsToAdd[2*i+1] = i;
         }
+
         // Randomize the cards
 //        randomizeCardArray(cardsToAdd);
 
-        // Make card object
+        // Make card objects
         for (int i = 0; i < cardsToAdd.length; i++) {
             int num = cardsToAdd[i];
             Card newCard = new Card(controller, this.images[num], backIcon, clearIcon, num, i);
@@ -125,6 +124,7 @@ public class matchingGame {
         this.mainFrame.setVisible(true);
     }
 
+    // thread to listen to server
     private static class Listener extends Thread {
         BufferedReader input;
         public Listener(Socket socket) throws IOException {
@@ -134,31 +134,41 @@ public class matchingGame {
         @Override
         public void run() {
             try {
+                // reads initial message of client id
                 String clientNumber = input.readLine();
                 System.out.println(clientNumber);
                 text.setText("  " + clientNumber);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
+
             try {
                 while (true) {
+                    // reading server message
+                    // 2 types of messages, fields separated by "-":
+                    // END GAME, card value matched, client id
                     String serverResponse = input.readLine();
                     String[] serverResponseArray = serverResponse.split("-");
+                    // END GAME case
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
-                        text.setText(text.getText() + "     " + serverResponseArray[1]);
+                        text.setText("   " + text.getText() + "     " + serverResponseArray[1]);
                         text.setLineWrap(true);
                         text.setWrapStyleWord(true);
                     }
+                    // card matched case
                     else {
                         Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
                         System.out.println(serverResponseArray[1]);
 
+                        // hiding the cards that have been matched by another client
                         for (Card card : cardArray) {
                             if (card.getValue() == matchedValue) {
                                 card.clearCard();
                             }
                         }
+                        // removing the matched cards from the currently selected cards
                         Vector<Card> flippedCards = getFlippedCards();
                         if (getFlippedCards().size() == 1) {
                             Card card1 = (Card) getFlippedCards().get(0);
@@ -168,11 +178,11 @@ public class matchingGame {
                         }
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
 }
 

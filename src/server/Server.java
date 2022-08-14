@@ -18,12 +18,12 @@ public class Server {
     private static AtomicInteger clientIds = new AtomicInteger();
     private static boolean flag = false;
 
-
     public static void main(String[] args) throws Exception {
         System.out.println("MinionMatch is running!!!");
         var pool = Executors.newFixedThreadPool(4);
         try (var listener = new ServerSocket(8080)) {
             while (true) {
+                // create a handler (thread) for every client that connects, max 5 clients
                 pool.execute(new Handler(listener.accept(), clientIds.getAndIncrement()));
                 System.out.println("client connect");
                 System.out.println(writers.size());
@@ -51,8 +51,11 @@ public class Server {
                 // displaying the client id to the client who connected
                 out.println("You are Client " + id);
                 while (true) {
+                    // read an input from the server
                     int serverResponse = Integer.parseInt(in.nextLine());
+                    // check if the card has already been matched
                     if(!matchedValues.containsKey(serverResponse)) {
+                        // add the matched card to the matched card list
                         matchedValues.put(serverResponse, id);
                         // broadcast to all clients
                         for (PrintWriter writer : writers) {
@@ -68,6 +71,7 @@ public class Server {
                         for(Map.Entry<Integer, Integer> entry : matchedValues.entrySet()) {
                             clientScores[entry.getValue()]++;
                         }
+                        // write current client score to the other clients
                         for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
                                 writer.println("END GAME-Client " + index + ": " + clientScores[index]);
@@ -75,17 +79,20 @@ public class Server {
                         }
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 System.out.println(e);
 
-            } finally {
+            }
+            finally {
                 if (out != null) {
                     writers.remove(out);
                 }
 
                 try {
                     socket.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                 }
             }
         }
