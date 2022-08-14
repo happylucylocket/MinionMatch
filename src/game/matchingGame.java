@@ -137,10 +137,13 @@ public class matchingGame {
                         }
                     }
                     Vector<Card> flippedCards = getFlippedCards();
-                    for(Card card : flippedCards) {
-                        if(card.getValue() == matchedValue) {
-                            flippedCards.clear();
-                        }
+                    Card card1 = (Card) getFlippedCards().get(0);
+                    Card card2 = (Card) getFlippedCards().get(1);
+                    if(card1 != null && card1.getValue() == matchedValue) {
+                        flippedCards.remove(card1);
+                    }
+                    if(card2 != null && card2.getValue() == matchedValue) {
+                        flippedCards.remove(card2);
                     }
                 }
             } catch (Exception e) {
