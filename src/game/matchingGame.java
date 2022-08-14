@@ -31,7 +31,7 @@ public class matchingGame {
     private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
-    private JLabel text;
+    private static JLabel text;
     private static ArrayList<Card> cardArray = new ArrayList<Card>();
     private cardController controller;
 
@@ -134,7 +134,9 @@ public class matchingGame {
         @Override
         public void run() {
             try {
-                System.out.println(input.readLine());
+                String clientNumber = input.readLine();
+                System.out.println(clientNumber);
+                text.setText(clientNumber);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -144,6 +146,7 @@ public class matchingGame {
                     String[] serverResponseArray = serverResponse.split(":");
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
+                        text.setText(text + "\n" + serverResponseArray[1]);
                     }
                     else {
                         Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
