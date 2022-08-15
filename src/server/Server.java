@@ -10,10 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Collections;
 
 public class Server {
-    // stores all the cards that have been matched
+    // Stores all the cards that have been matched
     // key = the value of the card that was matched, value = the client id who got the match
     private static Map<Integer, Integer> matchedValues = Collections.synchronizedMap(new HashMap<>());
-    // the set of all the print writers for all the clients, used for broadcast.
+    // The set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
     private static AtomicInteger clientIds = new AtomicInteger();
     private static boolean flag = false;
@@ -48,30 +48,30 @@ public class Server {
                 out = new PrintWriter(socket.getOutputStream(), true);
 
                 writers.add(out);
-                // displaying the client id to the client who connected
+                // Displaying the client id to the client who connected
                 out.println("Player " + ( id + 1));
                 while (true) {
-                    // read an input from the server
+                    // Read an input from the server
                     int serverResponse = Integer.parseInt(in.nextLine());
-                    // check if the card has already been matched
+                    // Check if the card has already been matched
                     if(!matchedValues.containsKey(serverResponse)) {
-                        // add the matched card to the matched card list
+                        // Add the matched card to the matched card list
                         matchedValues.put(serverResponse, id);
-                        // broadcast to all clients
+                        // Broadcast to all clients
                         for (PrintWriter writer : writers) {
                             writer.println(serverResponse + "-Client " + id + " matched the cards with value " + serverResponse);
                         }
                     }
-                    // checking if the game is finished (all the cards have been matched)
+                    // Checking if the game is finished (all the cards have been matched)
                     if(matchedValues.size() == 18 && flag == false) {
-                        // check for concurrency
+                        // Check for concurrency
                         flag = true;
-                        // calculate client scores
+                        // Calculate client scores
                         int[] clientScores = new int[writers.size()];
                         for(Map.Entry<Integer, Integer> entry : matchedValues.entrySet()) {
                             clientScores[entry.getValue()]++;
                         }
-                        // write current client score to the other clients
+                        // Write current client score to the other clients
                         for(int index = 0; index<writers.size(); index++) {
                             for (PrintWriter writer : writers) {
                                 writer.println("END GAME-Player " + (index+1) + ": " + clientScores[index]);

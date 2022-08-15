@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-// class to represent the card
+// Class to represent the card
 public class Card extends JLabel implements MouseListener {
     private final cardController controller;
     public Icon faceIcon;

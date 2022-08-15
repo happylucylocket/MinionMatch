@@ -22,9 +22,9 @@ public class matchingGame {
     private ImageIcon images[];
     private Socket socket;
     private PrintWriter out;
-    // local
+    // Local IP
     private static final String SERVER_IP = "127.0.0.1";
-    // have to change to the server host ip
+    // Change to host server IP if host is running on another device
 //    private static final String SERVER_IP = "142.58.217.96";
     private static final int SERVER_PORT = 8080;
     private Listener listener;
@@ -41,16 +41,16 @@ public class matchingGame {
         this.mainFrame.setIconImage(new ImageIcon(getClass().getResource("/icon.jpg")).getImage()); // application icon
         this.panel = new JPanel(new GridLayout(6, 6));
 
-        // make new JPanel for text
+        // Make a new JPanel for text
         this.textPanel = new JPanel();
         this.text = new JTextArea();
         this.text.setPreferredSize(new Dimension(430, 45));
         this.text.setFont(new Font("Comic Sans MS", 1, 12));
 
-        // load the card images
+        // Load the card images
         this.images = loadCardImages();
 
-        // connect to the server
+        // Connect to the server
         try {
             this.socket = new Socket(SERVER_IP, SERVER_PORT);
             this.out = new PrintWriter(socket.getOutputStream(), true);
@@ -75,7 +75,7 @@ public class matchingGame {
 
     public JPanel makeCards(JPanel panel) {
 
-        // all cards have same back side
+        // All cards have same back side
         ImageIcon backIcon = this.images[18];
         ImageIcon clearIcon = this.images[19];
 
@@ -111,18 +111,18 @@ public class matchingGame {
 
     public void start() {
         this.mainContentPane.removeAll();
-        // make new card set visible
+        // Make new card set visible
         this.mainContentPane.add(makeCards(panel));
         this.textPanel.add(text);
         this.mainFrame.add(textPanel);
 
-        //show main in window
+        // Show main in window
         this.mainFrame.setResizable(false);
         this.mainFrame.setLocationRelativeTo(null); // creates window in center of screen
         this.mainFrame.setVisible(true);
     }
 
-    // thread to listen to server
+    // Thread to listen to server
     private static class Listener extends Thread {
         BufferedReader input;
         public Listener(Socket socket) throws IOException {
@@ -143,7 +143,7 @@ public class matchingGame {
 
             try {
                 while (true) {
-                    // reading server message
+                    // Reading server message
                     // 2 types of messages, fields separated by "-":
                     // END GAME, card value matched, client id
                     String serverResponse = input.readLine();
@@ -155,18 +155,18 @@ public class matchingGame {
                         text.setLineWrap(true);
                         text.setWrapStyleWord(true);
                     }
-                    // card matched case
+                    // Card matched case
                     else {
                         Integer matchedValue = Integer.parseInt(serverResponseArray[0]);
                         System.out.println(serverResponseArray[1]);
 
-                        // hiding the cards that have been matched by another client
+                        // Hiding the cards that have been matched by another client
                         for (Card card : cardArray) {
                             if (card.getValue() == matchedValue) {
                                 card.clearCard();
                             }
                         }
-                        // removing the matched cards from the currently selected cards
+                        // Removing the matched cards from the currently selected cards
                         Vector<Card> flippedCards = getFlippedCards();
                         if (getFlippedCards().size() == 1) {
                             Card card1 = (Card) getFlippedCards().get(0);
