@@ -86,7 +86,7 @@ public class matchingGame {
         }
 
         // Randomize the cards
-//        randomizeCardArray(cardsToAdd);
+        randomizeCardArray(cardsToAdd);
 
         // Make card objects
         for (int i = 0; i < cardsToAdd.length; i++) {
@@ -151,7 +151,7 @@ public class matchingGame {
                     // END GAME case
                     if(serverResponseArray[0].equalsIgnoreCase("END GAME")) {
                         System.out.println(serverResponseArray[1]);
-                        text.setText(text.getText() + "  " + serverResponseArray[1]);
+                        text.setText(text.getText() + "  " + serverResponseArray[1] + " | ");
                         text.setLineWrap(true);
                         text.setWrapStyleWord(true);
                     }
