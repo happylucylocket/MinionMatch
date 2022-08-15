@@ -6,18 +6,20 @@ import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+// class to represent the card
 public class Card extends JLabel implements MouseListener {
     private final cardController controller;
-    Icon faceIcon;
+    public Icon faceIcon;
     Icon backIcon;
     Icon clearIcon;
     int value;
+    int id;
     int iconWidthHalf, iconHeightHalf;
     boolean mousePressedOnMe = false;
     boolean faceUp = false;
     boolean clear = false;
 
-    public Card(cardController controller, Icon faceIcon, Icon backIcon, Icon clearIcon, int value) {
+    public Card(cardController controller, Icon faceIcon, Icon backIcon, Icon clearIcon, int value, int id) {
         super(backIcon);
         this.faceIcon = faceIcon;
         this.backIcon = backIcon;
@@ -27,6 +29,7 @@ public class Card extends JLabel implements MouseListener {
         this.iconHeightHalf = backIcon.getIconHeight() / 2;
         this.iconWidthHalf = faceIcon.getIconWidth() / 2;
         this.controller = controller;
+        this.id = id;
     }
 
     public int getValue() { return value; }
@@ -69,7 +72,9 @@ public class Card extends JLabel implements MouseListener {
 
     public void clearCard() {
         this.clear = true;
+        this.faceUp = false;
         this.setIcon(this.clearIcon);
+        this.backIcon = this.clearIcon;
     }
 
     @Override

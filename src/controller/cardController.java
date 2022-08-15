@@ -9,41 +9,44 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 public class cardController implements ActionListener {
-
-    private Vector flippedCards;
+    // stores all the cards that the client has currently flipped
+    private static Vector flippedCards;
     private Timer flipDownTimer;
     private final int flipDownDelay = 500; // milliseconds
     private PrintWriter out;
     public cardController(PrintWriter object) {
-        this.out=object;
-        this.flippedCards = new Vector<Card>(2);
+        this.out = object;
+        this.setFlippedCards(new Vector<Card>(2));
         this.flipDownTimer = new Timer(this.flipDownDelay, this);
         this.flipDownTimer.setRepeats(false);
     }
 
+    public static Vector getFlippedCards() {
+        return flippedCards;
+    }
+
+    public static void setFlippedCards(Vector flippedCards) {
+        cardController.flippedCards = flippedCards;
+    }
+
     public boolean flipUp(Card card) {
-//        System.out.println("FlipUp");
-        if (this.flippedCards.size() < 2) {
+        if (getFlippedCards().size() < 2) {
             return doAddCard(card);
         }
         return false;
     }
 
     private boolean doAddCard(Card card) {
-//        System.out.println("doAddCard");
-        this.flippedCards.add(card);
-        if (this.flippedCards.size() == 2) {
-            Card otherCard = (Card)this.flippedCards.get(0);
+        getFlippedCards().add(card);
+        if (getFlippedCards().size() == 2) {
+            Card otherCard = (Card) getFlippedCards().get(0);
             if (otherCard.getValue() == card.getValue()) {
                 // Sending the message to the server
-                String msg = "card match -> " + otherCard.getValue() + " - " + card.getValue();
-                out.println(msg);
+                int matchedValue = card.getValue();
+                out.println(matchedValue);
 
-
-                card.clearCard();
-                otherCard.clearCard();
                 // Clear the flippedCards array
-                this.flippedCards.clear();
+                getFlippedCards().clear();
 
             } else {
                 this.flipDownTimer.start();
@@ -54,11 +57,10 @@ public class cardController implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("action ");
-        for (int i = 0; i < this.flippedCards.size(); i++) {
-            Card card = (Card)this.flippedCards.get(i);
+        for (int i = 0; i < getFlippedCards().size(); i++) {
+            Card card = (Card) getFlippedCards().get(i);
             card.turnDown();
         }
-        this.flippedCards.clear();
+        getFlippedCards().clear();
     }
 }

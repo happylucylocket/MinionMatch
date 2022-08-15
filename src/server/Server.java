@@ -4,83 +4,95 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Collections;
 
 public class Server {
-
-    private static Set<String> names = new HashSet<>();
-
-    // The set of all the print writers for all the clients, used for broadcast.
+    // stores all the cards that have been matched
+    // key = the value of the card that was matched, value = the client id who got the match
+    private static Map<Integer, Integer> matchedValues = Collections.synchronizedMap(new HashMap<>());
+    // the set of all the print writers for all the clients, used for broadcast.
     private static Set<PrintWriter> writers = new HashSet<>();
+    private static AtomicInteger clientIds = new AtomicInteger();
+    private static boolean flag = false;
 
     public static void main(String[] args) throws Exception {
-        System.out.println("The chat server is running...");
-        var pool = Executors.newFixedThreadPool(4);
+        System.out.println("MinionMatch is running!!!");
+        var pool = Executors.newFixedThreadPool(5);
         try (var listener = new ServerSocket(8080)) {
             while (true) {
-                pool.execute(new Handler(listener.accept()));
+                // create a handler (thread) for every client that connects, max 5 clients
+                pool.execute(new Handler(listener.accept(), clientIds.getAndIncrement()));
                 System.out.println("client connect");
                 System.out.println(writers.size());
-
             }
         }
     }
 
     private static class Handler implements Runnable {
-        private String name;
+        private Integer id;
         private Socket socket;
         private Scanner in;
         private PrintWriter out;
 
-        /**
-         * Constructs a handler thread, squirreling away the socket. All the interesting
-         * work is done in the run method. Remember the constructor is called from the
-         * server's main method, so this has to be as short as possible.
-         */
-        public Handler(Socket socket) {
+        public Handler(Socket socket, int id) {
             this.socket = socket;
+            this.id = id;
         }
 
-        /**
-         * Services this thread's client by repeatedly requesting a screen name until a
-         * unique one has been submitted, then acknowledges the name and registers the
-         * output stream for the client in a global set, then repeatedly gets inputs and
-         * broadcasts them.
-         */
         public void run() {
             try {
                 in = new Scanner(socket.getInputStream());
                 out = new PrintWriter(socket.getOutputStream(), true);
 
-
                 writers.add(out);
-
+                // displaying the client id to the client who connected
+                out.println("Player " + ( id + 1));
                 while (true) {
-                    String input = in.nextLine();
-                    if (input.toLowerCase().startsWith("/quit")) {
-                        return;
+                    // read an input from the server
+                    int serverResponse = Integer.parseInt(in.nextLine());
+                    // check if the card has already been matched
+                    if(!matchedValues.containsKey(serverResponse)) {
+                        // add the matched card to the matched card list
+                        matchedValues.put(serverResponse, id);
+                        // broadcast to all clients
+                        for (PrintWriter writer : writers) {
+                            writer.println(serverResponse + "-Client " + id + " matched the cards with value " + serverResponse);
+                        }
                     }
-
-                    //broadcast to all
-                    for (PrintWriter writer : writers) {
-
-                        writer.println("MESSAGE :" + input);
+                    // checking if the game is finished (all the cards have been matched)
+                    if(matchedValues.size() == 18 && flag == false) {
+                        // check for concurrency
+                        flag = true;
+                        // calculate client scores
+                        int[] clientScores = new int[writers.size()];
+                        for(Map.Entry<Integer, Integer> entry : matchedValues.entrySet()) {
+                            clientScores[entry.getValue()]++;
+                        }
+                        // write current client score to the other clients
+                        for(int index = 0; index<writers.size(); index++) {
+                            for (PrintWriter writer : writers) {
+                                writer.println("END GAME-Player " + (index+1) + ": " + clientScores[index]);
+                            }
+                        }
                     }
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 System.out.println(e);
 
-            } finally {
+            }
+            finally {
                 if (out != null) {
                     writers.remove(out);
                 }
 
                 try {
                     socket.close();
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                 }
             }
         }
