@@ -10,12 +10,12 @@ For example, if there are two players, change the 4 to 2 so line 23 becomes `var
 ---
 
 ### Server
-1. One device must run the `Server` class before players run the game. If they are also running a client, set `SERVER_IP` in line 31 of the `matchingGame` class to localhost ip `127.0.0.1`. 
+1. One device must run the `Server` class before players run the game. If they are also running a client, set `SERVER_IP` in line 26 of the `matchingGame` class to localhost ip `127.0.0.1`. 
 2. The server must share its IP address with other clients on remote machines.
 3. To get the IP address of the device running the server, open the Command Prompt and enter `ipconfig /all`. The IP address to use is at IPv4 Address under Wireless LAN adapter Wi-Fi.
 
 ### Players
-1. Set the server IP in line 31 in the `matchingGame` class by changing the `SERVER_IP` variable to the IP address of the device running the server.
+1. Set the server IP in line 26 in the `matchingGame` class by changing the `SERVER_IP` variable to the IP address of the device running the server.
 2. Once the server is running, run the game from the Main class.
 3. Players can begin clicking on cards after all players have opened the game.
 
